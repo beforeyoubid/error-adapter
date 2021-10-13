@@ -1,0 +1,53 @@
+{
+  "name": "@beforeyoubid/error-adapter",
+  "version": "1.0.10",
+  "description": "A module to standardize error handling across the BYB platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "src/**/*"
+  ],
+  "scripts": {
+    "lint": "eslint --max-warnings 0 '**/*.{ts,tsx,js,jsx}' && tsc --noEmit",
+    "lint:fix": "eslint --fix --max-warnings 0 '**/*.{ts,tsx,js,jsx}'",
+    "test": "yarn build && jest --config jestconfig.json",
+    "test:coverage": "yarn build && jest --config jestconfig.json --watch --coverage",
+    "test:ci": "yarn build && jest --config jestconfig.json --verbose=false --coverage",
+    "test-only": "jest --config jestconfig.json",
+    "build": "tsc",
+    "build-and-publish": "npm run build && npm publish --access public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beforeyoubid/error-adapter.git"
+  },
+  "keywords": [],
+  "author": "shakeel@beforeyoubid.com.au",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/beforeyoubid/error-adapter/issues"
+  },
+  "homepage": "https://github.com/beforeyoubid/error-adapter#readme",
+  "dependencies": {
+    "@beforeyoubid/logger-adapter": "^1.0.1",
+    "@sentry/node": "^5.21.1",
+    "apollo-server": "^2.16.1",
+    "graphql": "^15.3.0",
+    "serverless-sentry-lib": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.17",
+    "@types/jest": "^26.0.9",
+    "@types/node": "^14.0.27",
+    "@typescript-eslint/eslint-plugin": "^3.9.0",
+    "@typescript-eslint/parser": "^3.9.0",
+    "eslint": "^7.6.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "jest": "^26.4.0",
+    "prettier": "^2.0.5",
+    "ts-jest": "^26.2.0",
+    "typescript": "^3.9.7"
+  }
+}
