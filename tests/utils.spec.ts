@@ -1,36 +1,61 @@
-import { isSentryEnabled } from '../src/utils';
+import {
+  ConflictError,
+  NotAuthenticated,
+  NotAuthorized,
+  NotFound,
+  UserInputError,
+  ValidationError,
+} from '../src/errors';
+import { ErrorCode } from '../src/constants';
+import { convertErrorToCode } from '../src/utils';
 
-describe('isSentryEnabled()', () => {
-  it('should return true if sentry DSN is provided, filterLocal is false, and disableSentry is false', () => {
-    const DSN = 'test';
-    const stage = 'local';
-    const filterLocal = 'false';
-    const disableSentry = 'false';
-    const res = isSentryEnabled(DSN, stage, filterLocal, disableSentry);
-    expect(res).toEqual(true);
+describe('convertErrorToCode()', () => {
+  it('Not Authenticated', () => {
+    const error = new NotAuthenticated('testing this little error');
+    const code = convertErrorToCode(error);
+
+    expect(code).toStrictEqual(ErrorCode.AUTHENTICATION_ERROR);
   });
-  it('should return false if sentry DSN is NOT provided, filterLocal is false, and disableSentry is false', () => {
-    const DSN = '';
-    const stage = 'local';
-    const filterLocal = 'false';
-    const disableSentry = 'false';
-    const res = isSentryEnabled(DSN, stage, filterLocal, disableSentry);
-    expect(res).toEqual(false);
+  it('Not Authorized', () => {
+    const error = new NotAuthorized('testing this little error');
+    const code = convertErrorToCode(error);
+
+    expect(code).toStrictEqual(ErrorCode.AUTHORIZATION_ERROR);
   });
-  it('should return false if sentry DSN is provided, filterLocal is true, and disableSentry is false', () => {
-    const DSN = 'test';
-    const stage = 'local';
-    const filterLocal = 'true';
-    const disableSentry = 'false';
-    const res = isSentryEnabled(DSN, stage, filterLocal, disableSentry);
-    expect(res).toEqual(false);
+  it('Not Found', () => {
+    const error = new NotFound('testing this little error');
+    const code = convertErrorToCode(error);
+
+    expect(code).toStrictEqual(ErrorCode.NOT_FOUND_ERROR);
   });
-  it('should return false if sentry DSN is provided, filterLocal is false, and disableSentry is true', () => {
-    const DSN = 'test';
-    const stage = 'local';
-    const filterLocal = 'false';
-    const disableSentry = 'true';
-    const res = isSentryEnabled(DSN, stage, filterLocal, disableSentry);
-    expect(res).toEqual(false);
+  it('Validation Error', () => {
+    const error = new ValidationError('testing this little error');
+    const code = convertErrorToCode(error);
+
+    expect(code).toStrictEqual(ErrorCode.VALIDATION_ERROR);
+  });
+  it('Bad User Input', () => {
+    const error = new UserInputError('testing this little error');
+    const code = convertErrorToCode(error);
+
+    expect(code).toStrictEqual(ErrorCode.BAD_USER_INPUT);
+  });
+  it('Conflict Error', () => {
+    const error = new ConflictError('testing this little error');
+    const code = convertErrorToCode(error);
+
+    expect(code).toStrictEqual(ErrorCode.CONFLICT_ERROR);
+  });
+  it('error defaults to server error', () => {
+    const error = new Error('testing this little error');
+    const code = convertErrorToCode(error);
+
+    expect(code).toStrictEqual(ErrorCode.SERVER_ERROR);
+  });
+  it('no error defaults to server error', () => {
+    const error: any = null;
+    const code = convertErrorToCode(error);
+
+    expect(code).toStrictEqual(ErrorCode.SERVER_ERROR);
   });
 });

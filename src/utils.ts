@@ -1,15 +1,54 @@
+import {
+  NotAuthorized,
+  NotFound,
+  NotAuthenticated,
+  ConflictError,
+  PaymentError,
+  ValidationError,
+  UserInputError,
+} from './errors';
+import { ErrorCode, errorTypesForSentry } from './constants';
+
 /**
- * Handy function to check if we are sending to Sentry
- * @param sentryDSN - Sentry endpoint must be present
- * @param stage - deployment stage
- * @param filterLocal - filter Sentry alerts for local environments only
- * @param disableSentry - disable sentry even when deployed
+ * Parse the error based on the error constructor
  */
-const isSentryEnabled = (sentryDSN: string, stage: string, filterLocal: string, disableSentry: string): boolean => {
-  if (!sentryDSN || disableSentry === 'true' || (stage === 'local' && filterLocal === 'true')) {
-    return false;
+const convertErrorToCode = (error: Error): ErrorCode => {
+  const { constructor } = error || {};
+  switch (constructor) {
+    case NotAuthenticated:
+      return ErrorCode.AUTHENTICATION_ERROR;
+    case NotAuthorized:
+      return ErrorCode.AUTHORIZATION_ERROR;
+    case NotFound:
+      return ErrorCode.NOT_FOUND_ERROR;
+    case ValidationError:
+      return ErrorCode.VALIDATION_ERROR;
+    case UserInputError:
+      return ErrorCode.BAD_USER_INPUT;
+    case ConflictError:
+      return ErrorCode.CONFLICT_ERROR;
+    case PaymentError:
+      return ErrorCode.PAYMENT_ERROR;
+
+    default:
+      return ErrorCode.SERVER_ERROR;
   }
-  return true;
 };
 
-export { isSentryEnabled };
+/**
+ * Determine which errors are sent to Sentry based on error type
+ */
+const handleBeforeSend = (_event: any, hint: { originalException: Error }) => {
+  const { originalException: error } = hint;
+  const code = convertErrorToCode(error);
+  console.log('error code: ' + code);
+
+  if (!errorTypesForSentry.includes(code)) {
+    console.log('not sending to Sentry');
+    return null;
+  }
+  console.log('sending to Sentry');
+  return _event;
+};
+
+export { convertErrorToCode, handleBeforeSend };
