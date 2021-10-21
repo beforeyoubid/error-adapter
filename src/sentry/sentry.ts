@@ -14,7 +14,7 @@ const handleBeforeSend = (_event: any, hint: { originalException: Error }) => {
     return null;
   }
   console.log('sending error to Sentry');
-  return error;
+  return _event;
 };
 
 export { handleBeforeSend };
