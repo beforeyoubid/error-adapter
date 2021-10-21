@@ -3,9 +3,9 @@
 This is an error handling module that supports multiple error types and the handling of each type accordingly using
 Sentry.
 
-The module does NOT set up a Sentry client, therefore a client must already be set up and initialized.
+This module does not set up a Sentry client, therefore a client must already be set up and initialized.
 
-The module provides functions to handle the formatting of GraphQL errors and sending errors to Sentry based on the error type.
+This module provides functions to handle the formatting of GraphQL errors and sending errors to Sentry based on the error type.
 
 ## Supported Error types
 
@@ -76,7 +76,7 @@ export default withSentry(graphqlHandler);
 
 ### Using with GraphQL
 Using `handleErrorSentryOptions` function to send errors to Sentry by passing `handleErrorSentryOptions` function into
-lambda handler.
+Lambda GraphQL handler.
 
 ```ts
 import { ApolloServer } from 'apollo-server-lambda';

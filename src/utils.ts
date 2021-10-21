@@ -35,20 +35,4 @@ const convertErrorToCode = (error: Error): ErrorCode => {
   }
 };
 
-/**
- * Determine which errors are sent to Sentry based on error type
- */
-const handleBeforeSend = (_event: any, hint: { originalException: Error }) => {
-  const { originalException: error } = hint;
-  const code = convertErrorToCode(error);
-  console.log('error code: ' + code);
-
-  if (!errorTypesForSentry.includes(code)) {
-    console.log('not sending to Sentry');
-    return null;
-  }
-  console.log('sending to Sentry');
-  return _event;
-};
-
-export { convertErrorToCode, handleBeforeSend };
+export { convertErrorToCode };
