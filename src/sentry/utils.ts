@@ -43,14 +43,13 @@ const getSentryParams = (env = process?.env || {}): ISentryParams => {
  * @param sentryDSN - Sentry endpoint must be present
  * @param stage - deployment stage
  * @param filterLocal - filter Sentry alerts for local environments only
- * @param disableSentry - disable sentry even when deployed
+ * @param disableSentry - disable Sentry
  */
- const isSentryEnabled = (sentryDSN: string, stage: string, filterLocal: string, disableSentry: string): boolean => {
+const isSentryEnabled = (sentryDSN: string, stage: string, filterLocal: string, disableSentry: string): boolean => {
   if (!sentryDSN || disableSentry === 'true' || (stage === 'local' && filterLocal === 'true')) {
     return false;
   }
   return true;
 };
 
-export { getSentryParams, getEnvs };
-export { isSentryEnabled };
+export { getSentryParams, getEnvs, isSentryEnabled };

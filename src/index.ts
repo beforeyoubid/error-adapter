@@ -8,9 +8,11 @@ import {
   UserInputError,
   formatError,
 } from './errors';
-import { handleErrorSentryOptions } from './sentry';
+import { handleErrorSentryOptions, Sentry, withSentry } from './sentry';
 
 export {
+  Sentry,
+  withSentry,
   NotAuthorized,
   NotFound,
   NotAuthenticated,
