@@ -7,7 +7,7 @@ import {
   ValidationError,
   UserInputError,
 } from './errors';
-import { ErrorCode, errorTypesForSentry } from './constants';
+import { ErrorCode } from './constants';
 
 /**
  * Parse the error based on the error constructor
