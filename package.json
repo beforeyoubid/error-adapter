@@ -1,6 +1,6 @@
 {
   "name": "@beforeyoubid/error-adapter",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "A module to standardize error handling across the BYB platform",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
