@@ -1,7 +1,6 @@
 import { Sentry } from './sentry';
 import { UserInputError } from 'apollo-server';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
-import { logger } from '@beforeyoubid/logger-adapter';
 import { errorTypesToIncludeDetails } from './constants';
 import { convertErrorToCode } from './utils';
 
@@ -22,14 +21,11 @@ export { UserInputError };
  */
 const formatError = (error: GraphQLError): GraphQLFormattedError => {
   const err = error.originalError ? error.originalError : error;
-  logger.error(err);
-  console.error(err);
-  logger.info(err.stack);
-
+  
   let details;
   const code = convertErrorToCode(err);
 
-  // Sentry client will determine where the error is to be reported to Sentry
+  // Sentry client will determine if the error is to be reported to Sentry
   Sentry.captureException(err);
 
   if (errorTypesToIncludeDetails.includes(code)) {

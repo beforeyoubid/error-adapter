@@ -30,7 +30,6 @@
   },
   "homepage": "https://github.com/beforeyoubid/error-adapter#readme",
   "dependencies": {
-    "@beforeyoubid/logger-adapter": "^1.0.1",
     "@sentry/node": "^5.21.1",
     "apollo-server": "^2.16.1",
     "graphql": "^15.3.0",

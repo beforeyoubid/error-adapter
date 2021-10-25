@@ -14,10 +14,8 @@ const initialise = (params: ISentryParams = sentryParams): void => {
     const { sentryOptions, sendToSentry } = params;
     if (sendToSentry) {
       Sentry.init(sentryOptions);
-      console.info(`Sentry is enabled`);
     } else {
       Sentry.init({ dsn: '', enabled: false });
-      console.info(`Sentry is disabled`);
     }
   }
   initialised = true;
