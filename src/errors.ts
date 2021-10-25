@@ -1,9 +1,11 @@
-import * as Sentry from '@sentry/node';
-import { logger } from '@beforeyoubid/logger-adapter';
-import { UserInputError } from 'apollo-server';
+import { Sentry } from './sentry';
+import { UserInputError } from 'apollo-server-core';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
+import { errorTypesToIncludeDetails } from './constants';
+import { convertErrorToCode } from './utils';
 
-import { ErrorCode } from './constants';
+// Initialise the Sentry client
+Sentry.initialise();
 
 /* tslint:disable */
 export class NotAuthorized extends Error {}
@@ -14,43 +16,17 @@ export class PaymentError extends Error {}
 export class ValidationError extends Error {}
 export { UserInputError };
 
-const errorTypesForSentry = [ErrorCode.AUTHORIZATION_ERROR, ErrorCode.SERVER_ERROR];
-const errorTypesToIncludeDetails = [ErrorCode.VALIDATION_ERROR];
-
-const convertErrorToCode = (error: Error): ErrorCode => {
-  const { constructor } = error || {};
-
-  switch (constructor) {
-    case NotAuthenticated:
-      return ErrorCode.AUTHENTICATION_ERROR;
-    case NotAuthorized:
-      return ErrorCode.AUTHORIZATION_ERROR;
-    case NotFound:
-      return ErrorCode.NOT_FOUND_ERROR;
-    case ValidationError:
-      return ErrorCode.VALIDATION_ERROR;
-    case UserInputError:
-      return ErrorCode.BAD_USER_INPUT;
-    case ConflictError:
-      return ErrorCode.CONFLICT_ERROR;
-
-    default:
-      return ErrorCode.SERVER_ERROR;
-  }
-};
-
+/**
+ * Used to correctly format GraphQL errors to prepare for sending to Sentry if needed
+ */
 const formatError = (error: GraphQLError): GraphQLFormattedError => {
   const err = error.originalError ? error.originalError : error;
-  logger.error(err);
-  console.error(err);
-  logger.info(err.stack);
 
   let details;
   const code = convertErrorToCode(err);
 
-  if (errorTypesForSentry.includes(code)) {
-    Sentry.captureException(err);
-  }
+  // Sentry client will determine if the error is to be reported to Sentry
+  Sentry.captureException(err);
 
   if (errorTypesToIncludeDetails.includes(code)) {
     details = error.message;
@@ -67,20 +43,4 @@ const formatError = (error: GraphQLError): GraphQLFormattedError => {
   };
 };
 
-const handleUserAccessDirectiveError = (error: Error, id: any, extra: any) => {
-  if (verifyIsSentryLevelError(error)) {
-    Sentry.captureException(error, { extra });
-  } else {
-    logger.info(`Skipping Sentry capture for user ${id} access directive error: ${error.message}`);
-  }
-};
-
-const verifyIsSentryLevelError = (error: Error): boolean => {
-  const code = convertErrorToCode(error);
-
-  const errorTypesForSentry: ErrorCode[] = [ErrorCode.SERVER_ERROR];
-
-  return errorTypesForSentry.includes(code);
-};
-
-export { formatError, convertErrorToCode, handleUserAccessDirectiveError, verifyIsSentryLevelError };
+export { formatError };

@@ -1,5 +1,5 @@
-import { ISentryParams } from './types';
-import { isSentryEnabled } from './utils';
+import { ISentryParams } from '../types';
+import { handleBeforeSend } from './sentry';
 
 const getEnvs = (env = process?.env || {}) => {
   const {
@@ -29,6 +29,7 @@ const getSentryParams = (env = process?.env || {}): ISentryParams => {
     dsn: SENTRY_DSN,
     environment: SENTRY_ENVIRONMENT,
     sampleRate: SENTRY_SAMPLE_RATE,
+    beforeSend: handleBeforeSend,
   };
 
   return {
@@ -37,4 +38,18 @@ const getSentryParams = (env = process?.env || {}): ISentryParams => {
   };
 };
 
-export { getSentryParams, getEnvs };
+/**
+ * Handy function to check if we are sending to Sentry
+ * @param sentryDSN - Sentry endpoint must be present
+ * @param stage - deployment stage
+ * @param filterLocal - filter Sentry alerts for local environments only
+ * @param disableSentry - disable Sentry
+ */
+const isSentryEnabled = (sentryDSN: string, stage: string, filterLocal: string, disableSentry: string): boolean => {
+  if (!sentryDSN || disableSentry === 'true' || (stage === 'local' && filterLocal === 'true')) {
+    return false;
+  }
+  return true;
+};
+
+export { getSentryParams, getEnvs, isSentryEnabled };
