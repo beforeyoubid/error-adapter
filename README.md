@@ -10,26 +10,25 @@ This module supports using environment variables to filter local error alerts, a
 
 ## Supported Error types
 
-| Error Type                 | Alert Raised in Sentry                                                             |
-| -------------------------- | ---------------------------------------------------------------------------------- |
-| `Server Error`             | Yes                                                                                |
-| `Not Authorized`           | Yes                                                                                |
-| `Not Authenticated`        | No                                                                                 |
-| `Not Found`                | No                                                                                 |
-| `Validation Error`         | No                                                                                 |
-| `Validation Error`         | No                                                                                 |
-| `User Input Error`         | No                                                                                 |
-| `Conflict Error`           | No                                                                                 |
+| Error Type          | Alert Raised in Sentry |
+| ------------------- | ---------------------- |
+| `Server Error`      | Yes                    |
+| `Not Authorized`    | Yes                    |
+| `Not Authenticated` | No                     |
+| `Not Found`         | No                     |
+| `Validation Error`  | No                     |
+| `Payment Error`     | No                     |
+| `User Input Error`  | No                     |
+| `Conflict Error`    | No                     |
 
 This module is designed to work on a native node runtime and in a Lambda environment. For Lambda, please see the
 [withSentry](#withSentry) section below.
-
 # Setup
 ## Installation
+
 ```
   yarn add @beforeyoubid/error-adapter
 ```
-
 ## Environment Variables
 Capturing can be controlled through the following environment variables. You can set them manually in your `serverless.yml` (Serverless Framework) or `template.yml` (AWS SAM) or let them be configured automatically using the [Serverless Sentry Plugin](https://github.com/arabold/serverless-sentry-plugin) during deployment.
 
@@ -68,11 +67,13 @@ custom:
 You can still manually set environment variables on a per-function level to overwrite the default ones. Please refer to the [Serverless Sentry Plugin](https://github.com/arabold/serverless-sentry-plugin) for full documentation of all available options.
 
 # Usages
-The modules caters for two usage mechanisms:
-1. Using `withSentry` higher-order function by wrapping handler functions in `withSenty` function.
-2. Using the `Sentry` Client to capture messages and exceptions
-
-
+The module caters for the following usage mechanisms:
+- Using `withSentry` higher-order function. 
+  - This can be used in confuction with the `formatErrors` function (see below).
+  - Used to wrap a Lambda handler to capture exceptions as per the `serverless-sentry-lib` library.
+- Using `formatErrors` function to format and capture errors caught by GraphQL.
+  - This can be passed into a GraphQL handler function to format and send errors to Sentry.
+- Using `handleErrorSentryOptions` to apply the above rules to your own `Sentry` client.
 ### 1) Using withSentry higher-order function
 **Original Lambda Handler Code**:
 
@@ -93,23 +94,101 @@ The modules caters for two usage mechanisms:
     return context.logStreamName;
   });
 ```
-
 Custom configuration options may also be used. Please refer to the [Serverless Sentry Plugin](https://github.com/arabold/serverless-sentry-plugin) for full documentation of all available options.
 
-### 2) Using the Sentry Client to Capture Messages and Exceptions
+### 2) Using `formatErrors` function to handle errors caught by GraphQL
 ```ts
-  import { Sentry } from "@beforeyoubid/error-adapter"; // This helper library
-  Sentry.initialise(); // This sets up the Sentry client based on environment variables
+import { ApolloServer } from 'apollo-server-lambda';
+import schema from '../graphql';
+import { formatError, withSentry } from '@beforeyoubid/error-adapter';
 
-  export const cronHandler = async (event, context) => {
-    try {
-      console.log("EVENT: \n" + JSON.stringify(event, null, 2));
-      return context.logStreamName;
-    } catch (error) {
-      Sentry.captureException(error);
+const server = new ApolloServer({
+  schema,
+  formatError,
+  context: async ({ event, context }): Promise<ApplicationContext> => {
+    const headers = {};
+    let gqcontext = {};
+    if (event.headers) {
+      const sourceUserAgent =
+        _.get(event, 'headers.x-source-user-agent') || _.get(event, 'headers.X-Source-User-Agent');
+
+      gqcontext = {
+        sourceUserAgent,
+      };
     }
-  };
+    return {
+      // cache,
+      functionName: context.functionName,
+      headers,
+      ...gqcontext,
+    };
+  },
+});
+
+const graphqlHandler = server.createHandler({
+  cors: {
+    origin: '*',
+    methods: ['POST'],
+  },
+});
+
+export default withSentry(graphqlHandler);
+```
+### 2) Using `handleErrorSentryOptions` to apply the above rules to your own `Sentry` client.
+### With GraphQL
+Using `handleErrorSentryOptions` function to send errors to Sentry by passing `handleErrorSentryOptions` function into
+Lambda GraphQL handler.
+
+```ts
+import { ApolloServer } from 'apollo-server-lambda';
+import withSentry from 'serverless-sentry-lib';
+import schema from '../graphql';
+import { formatError, handleErrorSentryOptions } from '@beforeyoubid/error-adapter';
+
+const server = new ApolloServer({
+  schema,
+  formatError,
+  context: async ({ event, context }): Promise<ApplicationContext> => {
+    const headers = {};
+    let gqcontext = {};
+    if (event.headers) {
+      const sourceUserAgent =
+        _.get(event, 'headers.x-source-user-agent') || _.get(event, 'headers.X-Source-User-Agent');
+
+      gqcontext = {
+        sourceUserAgent,
+      };
+    }
+    return {
+      // cache,
+      functionName: context.functionName,
+      headers,
+      ...gqcontext,
+    };
+  },
+});
+
+const graphqlHandler = server.createHandler({
+  cors: {
+    origin: '*',
+    methods: ['POST'],
+  },
+});
+
+export default withSentry(handleErrorSentryOptions, graphqlHandler);
 ```
 
+### Using without GraphQL
+```ts
+import withSentry from 'serverless-sentry-lib';
+import { handleErrorSentryOptions NotFound } from '@beforeyoubid/error-adapter';
+
+export const cronHandler = withSentry(handleErrorSentryOptions, async (event, context) => {
+  console.log('EVENT: \n' + JSON.stringify(event, null, 2));
+  throw new Error('This error will be raised in Sentry');
+  return context.logStreamName;
+});
+```
 # Roadmap
-- Extend this module to support centralised copy on error messages (useful for business users seeing the error, as well as developers investigating the error).
+- Extend this module to support centralised copy on error messages (useful for business users seeing the error, as well
+  as developers investigating the error).

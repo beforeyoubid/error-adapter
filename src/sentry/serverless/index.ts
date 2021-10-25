@@ -1,5 +1,5 @@
-var serverlessSentry = require('serverless-sentry-lib');
-import { Sentry } from '../sentry-node';
+let serverlessSentry = require('serverless-sentry-lib');
+import { Sentry } from '../node';
 
 // Initialise the Sentry client based on environment variables
 Sentry.initialise();
@@ -7,7 +7,7 @@ Sentry.initialise();
 /**
  * Wrap the serverless-sentry-lib function call to default to using own Sentry client unless custom options provided
  */
-const withSentry = (arg1: object, arg2: any) => {
+const withSentry = (arg1: object, arg2?: any) => {
   if (typeof arg1 === 'object') {
     // custom options passed in, include in callback
     // this allows the use of serverless-sentry-lib to handle custom options
