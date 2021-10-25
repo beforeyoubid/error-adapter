@@ -1,5 +1,5 @@
 import { Sentry } from './sentry';
-import { UserInputError } from 'apollo-server';
+import { UserInputError } from 'apollo-server-core';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import { errorTypesToIncludeDetails } from './constants';
 import { convertErrorToCode } from './utils';
