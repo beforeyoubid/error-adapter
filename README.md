@@ -67,13 +67,13 @@ custom:
 You can still manually set environment variables on a per-function level to overwrite the default ones. Please refer to the [Serverless Sentry Plugin](https://github.com/arabold/serverless-sentry-plugin) for full documentation of all available options.
 
 # Usages
-The module caters to the following usage mechanisms:
-1. Using `withSentry` higher-order function. 
+The module caters for the following usage mechanisms:
+- Using `withSentry` higher-order function. 
   - This can be used in confuction with the `formatErrors` function (see below).
   - Used to wrap a Lambda handler to capture exceptions as per the `serverless-sentry-lib` library.
-2. Using `formatErrors` function to format and capture errors caught by GraphQL.
+- Using `formatErrors` function to format and capture errors caught by GraphQL.
   - This can be passed into a GraphQL handler function to format and send errors to Sentry.
-3. Using `handleErrorSentryOptions` to apply the above rules to your own `Sentry` client.
+- Using `handleErrorSentryOptions` to apply the above rules to your own `Sentry` client.
 ### 1) Using withSentry higher-order function
 **Original Lambda Handler Code**:
 
@@ -88,6 +88,7 @@ The module caters to the following usage mechanisms:
 
 ```ts
   import { withSentry } from "@beforeyoubid/error-adapter"; // This helper library
+
   export const handler = withSentry(async (event, context) => {
     console.log("EVENT: \n" + JSON.stringify(event, null, 2));
     return context.logStreamName;
@@ -98,9 +99,8 @@ Custom configuration options may also be used. Please refer to the [Serverless S
 ### 2) Using `formatErrors` function to handle errors caught by GraphQL
 ```ts
 import { ApolloServer } from 'apollo-server-lambda';
-import withSentry from 'serverless-sentry-lib';
 import schema from '../graphql';
-import { formatError } from '@beforeyoubid/error-adapter';
+import { formatError, withSentry } from '@beforeyoubid/error-adapter';
 
 const server = new ApolloServer({
   schema,
@@ -181,7 +181,7 @@ export default withSentry(handleErrorSentryOptions, graphqlHandler);
 ### Using without GraphQL
 ```ts
 import withSentry from 'serverless-sentry-lib';
-import { handleErrorSentryOptions, NotFound } from '@beforeyoubid/error-adapter';
+import { handleErrorSentryOptions NotFound } from '@beforeyoubid/error-adapter';
 
 export const cronHandler = withSentry(handleErrorSentryOptions, async (event, context) => {
   console.log('EVENT: \n' + JSON.stringify(event, null, 2));
