@@ -1,4 +1,4 @@
-var serverlessSentry = require('serverless-sentry-lib');
+let serverlessSentry = require('serverless-sentry-lib');
 import { Sentry } from '../node';
 
 // Initialise the Sentry client based on environment variables

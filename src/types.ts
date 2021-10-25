@@ -1,9 +1,8 @@
-
 export interface ISentryOptions {
   dsn: string;
   environment: string;
   sampleRate: string | number;
-  beforeSend: Function;
+  beforeSend: any;
 }
 
 export interface ISentryParams {

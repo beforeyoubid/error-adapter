@@ -21,7 +21,7 @@ export { UserInputError };
  */
 const formatError = (error: GraphQLError): GraphQLFormattedError => {
   const err = error.originalError ? error.originalError : error;
-  
+
   let details;
   const code = convertErrorToCode(err);
 

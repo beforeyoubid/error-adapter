@@ -1,9 +1,9 @@
-var Sentry = require('@sentry/node');
+let Sentry = require('@sentry/node');
 import { ISentryParams } from '../../types';
 import { getSentryParams } from '../utils';
 
 const sentryParams = getSentryParams();
-var initialised = false;
+let initialised = false;
 
 /**
  * Initialise Sentry based on provided parameters
