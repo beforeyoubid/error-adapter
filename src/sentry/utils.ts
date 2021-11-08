@@ -21,11 +21,11 @@ const getEnvs = (env = process?.env || {}) => {
   };
 };
 
-const getSentryParams = (env = process?.env || {}): ISentryParams => {
+const getDefaultSentryParams = (env = process?.env || {}): ISentryParams => {
   const { SENTRY_DSN, SENTRY_ENVIRONMENT, SENTRY_FILTER_LOCAL, SENTRY_SAMPLE_RATE, DISABLE_SENTRY, STAGE } =
     getEnvs(env);
 
-  const sentryOptions = {
+  const defaultSentryOptions = {
     dsn: SENTRY_DSN,
     environment: SENTRY_ENVIRONMENT,
     sampleRate: SENTRY_SAMPLE_RATE,
@@ -34,7 +34,7 @@ const getSentryParams = (env = process?.env || {}): ISentryParams => {
 
   return {
     sendToSentry: isSentryEnabled(SENTRY_DSN, STAGE, SENTRY_FILTER_LOCAL, DISABLE_SENTRY),
-    sentryOptions,
+    defaultSentryOptions,
   };
 };
 
@@ -52,4 +52,4 @@ const isSentryEnabled = (sentryDSN: string, stage: string, filterLocal: string, 
   return true;
 };
 
-export { getSentryParams, getEnvs, isSentryEnabled };
+export { getDefaultSentryParams, getEnvs, isSentryEnabled };
