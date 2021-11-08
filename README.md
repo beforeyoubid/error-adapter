@@ -74,6 +74,7 @@ The module caters for the following usage mechanisms:
 - Using `formatErrors` function to format and capture errors caught by GraphQL.
   - This can be passed into a GraphQL handler function to format and send errors to Sentry.
 - Using `handleErrorSentryOptions` to apply the above rules to your own `Sentry` client.
+- Adding custom `Sentry` options in conjunction with the options provided by this library.
 ### 1) Using withSentry higher-order function
 **Original Lambda Handler Code**:
 
@@ -134,7 +135,7 @@ const graphqlHandler = server.createHandler({
 
 export default withSentry(graphqlHandler);
 ```
-### 2) Using `handleErrorSentryOptions` to apply the above rules to your own `Sentry` client.
+### 3) Using `handleErrorSentryOptions` to apply the above rules to your own `Sentry` client.
 ### With GraphQL
 Using `handleErrorSentryOptions` function to send errors to Sentry by passing `handleErrorSentryOptions` function into
 Lambda GraphQL handler.
@@ -184,6 +185,37 @@ import withSentry from 'serverless-sentry-lib';
 import { handleErrorSentryOptions NotFound } from '@beforeyoubid/error-adapter';
 
 export const cronHandler = withSentry(handleErrorSentryOptions, async (event, context) => {
+  console.log('EVENT: \n' + JSON.stringify(event, null, 2));
+  throw new Error('This error will be raised in Sentry');
+  return context.logStreamName;
+});
+```
+
+### 3) Adding custom `Sentry` options in conjunction with the options provided by this library.
+This is particularly useful when the Sentry client must be initialized as early as possbile. eg. when using Sentry with [`express`](https://docs.sentry.io/platforms/node/guides/express/). The library will apply the options highlighted above with the options passed into the `Sentry.initialise()` function.  
+```ts
+import express from 'express';
+import { Sentry, withSentry } from '@beforeyoubid/error-adapter';
+import * as Tracing from '@sentry/tracing';
+
+const app = express();
+Sentry.initialise({
+  integrations: [
+    // enable HTTP calls tracing
+    new Sentry.Integrations.Http({ tracing: true }),
+    // enable Express.js middleware tracing
+    new Tracing.Integrations.Express({ app }),
+  ],
+
+  // amount of performance reports (out of 1) are sent to sentry
+  tracesSampleRate: 0.5,
+});
+
+app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
+app.use(Sentry.Handlers.tracingHandler());
+app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler);
+
+export const cronHandler = withSentry(async (event, context) => {
   console.log('EVENT: \n' + JSON.stringify(event, null, 2));
   throw new Error('This error will be raised in Sentry');
   return context.logStreamName;
