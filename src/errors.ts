@@ -4,9 +4,6 @@ import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import { errorTypesToIncludeDetails } from './constants';
 import { convertErrorToCode } from './utils';
 
-// Initialise the Sentry client
-Sentry.initialise();
-
 /* tslint:disable */
 export class NotAuthorized extends Error {}
 export class NotFound extends Error {}
