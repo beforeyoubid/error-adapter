@@ -1,13 +1,16 @@
 import {
   ConflictError,
+  ExternalApiError,
   NotAuthenticated,
   NotAuthorized,
   NotFound,
+  SystemError,
   UserInputError,
   ValidationError,
 } from '../src/errors';
 import { ErrorCode } from '../src/constants';
-import { convertErrorToCode } from '../src/utils';
+import { convertErrorToCode, getErrorType } from '../src/utils';
+import { GraphQLError } from 'graphql';
 
 describe('convertErrorToCode()', () => {
   it('Not Authenticated', () => {
@@ -46,6 +49,18 @@ describe('convertErrorToCode()', () => {
 
     expect(code).toStrictEqual(ErrorCode.CONFLICT_ERROR);
   });
+  it('System Error', () => {
+    const error = new SystemError('testing this little error');
+    const code = convertErrorToCode(error);
+
+    expect(code).toStrictEqual(ErrorCode.SYSTEM_ERROR);
+  });
+  it('External API Error', () => {
+    const error = new ExternalApiError('testing this little error');
+    const code = convertErrorToCode(error);
+
+    expect(code).toStrictEqual(ErrorCode.EXTERNAL_API_ERROR);
+  });
   it('error defaults to server error', () => {
     const error = new Error('testing this little error');
     const code = convertErrorToCode(error);
@@ -57,5 +72,96 @@ describe('convertErrorToCode()', () => {
     const code = convertErrorToCode(error);
 
     expect(code).toStrictEqual(ErrorCode.SERVER_ERROR);
+  });
+});
+
+describe('getErrorType()', () => {
+  it('Not Authenticated', () => {
+    const error = new GraphQLError('GraphQL Error', null, null, null, null, null, {
+      code: ErrorCode.AUTHENTICATION_ERROR,
+    });
+    const type = getErrorType(error);
+    const errorOfType = new type('testing this little error');
+
+    expect(errorOfType).toBeInstanceOf(NotAuthenticated);
+  });
+  it('Not Authorized', () => {
+    const error = new GraphQLError('GraphQL Error', null, null, null, null, null, {
+      code: ErrorCode.AUTHORIZATION_ERROR,
+    });
+    const type = getErrorType(error);
+    const errorOfType = new type('testing this little error');
+    
+    expect(errorOfType).toBeInstanceOf(NotAuthorized);
+  });
+  it('Not Found', () => {
+    const error = new GraphQLError('GraphQL Error', null, null, null, null, null, {
+      code: ErrorCode.NOT_FOUND_ERROR,
+    });
+    const type = getErrorType(error);
+    const errorOfType = new type('testing this little error');
+    
+    expect(errorOfType).toBeInstanceOf(NotFound);
+  });
+  it('Validation Error', () => {
+    const error = new GraphQLError('GraphQL Error', null, null, null, null, null, {
+      code: ErrorCode.VALIDATION_ERROR,
+    });
+    const type = getErrorType(error);
+    const errorOfType = new type('testing this little error');
+    
+    expect(errorOfType).toBeInstanceOf(ValidationError);
+  });
+  it('Bad User Input', () => {
+    const error = new GraphQLError('GraphQL Error', null, null, null, null, null, {
+      code: ErrorCode.BAD_USER_INPUT,
+    });
+    const type = getErrorType(error);
+    const errorOfType = new type('testing this little error');
+    
+    expect(errorOfType).toBeInstanceOf(UserInputError);
+  });
+  it('Conflict Error', () => {
+    const error = new GraphQLError('GraphQL Error', null, null, null, null, null, {
+      code: ErrorCode.CONFLICT_ERROR,
+    });
+    const type = getErrorType(error);
+    const errorOfType = new type('testing this little error');
+    
+    expect(errorOfType).toBeInstanceOf(ConflictError);
+  });
+  it('System Error', () => {
+    const error = new GraphQLError('GraphQL Error', null, null, null, null, null, {
+      code: ErrorCode.SYSTEM_ERROR,
+    });
+    const type = getErrorType(error);
+    const errorOfType = new type('testing this little error');
+    
+    expect(errorOfType).toBeInstanceOf(SystemError);
+  });
+  it('External API Error', () => {
+    const error = new GraphQLError('GraphQL Error', null, null, null, null, null, {
+      code: ErrorCode.EXTERNAL_API_ERROR,
+    });
+    const type = getErrorType(error);
+    const errorOfType = new type('testing this little error');
+    
+    expect(errorOfType).toBeInstanceOf(ExternalApiError);
+  });
+  it('Server Error', () => {
+    const error = new GraphQLError('GraphQL Error', null, null, null, null, null, {
+      code: ErrorCode.SERVER_ERROR,
+    });
+    const type = getErrorType(error);
+    const errorOfType = new type('testing this little error');
+    
+    expect(errorOfType).toBeInstanceOf(Error);
+  });
+  it('no error defaults to Server Error', () => {
+    const error = new GraphQLError('GraphQL Error');
+    const type = getErrorType(error);
+    const errorOfType = new type('testing this little error');
+    
+    expect(errorOfType).toBeInstanceOf(Error);
   });
 });
