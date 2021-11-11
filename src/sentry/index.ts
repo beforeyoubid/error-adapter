@@ -11,4 +11,4 @@ const handleErrorSentryOptions = {
   },
 };
 
-export { handleErrorSentryOptions, Sentry, withSentry };
+export { handleErrorSentryOptions, Sentry, withSentry, handleBeforeSend };

@@ -20,6 +20,8 @@ This module supports using environment variables to filter local error alerts, a
 | `Payment Error`     | No                     |
 | `User Input Error`  | No                     |
 | `Conflict Error`    | No                     |
+| `External API Error`| No                     |
+| `System Error`      | No                     |
 
 This module is designed to work on a native node runtime and in a Lambda environment. For Lambda, please see the
 [withSentry](#withSentry) section below.
