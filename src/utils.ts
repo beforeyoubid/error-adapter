@@ -6,8 +6,11 @@ import {
   PaymentError,
   ValidationError,
   UserInputError,
+  ExternalApiError,
+  SystemError,
 } from './errors';
 import { ErrorCode } from './constants';
+import { GraphQLError } from 'graphql';
 
 /**
  * Parse the error based on the error constructor
@@ -29,10 +32,45 @@ const convertErrorToCode = (error: Error): ErrorCode => {
       return ErrorCode.CONFLICT_ERROR;
     case PaymentError:
       return ErrorCode.PAYMENT_ERROR;
+    case ExternalApiError:
+      return ErrorCode.EXTERNAL_API_ERROR;
+    case SystemError:
+      return ErrorCode.SYSTEM_ERROR;
 
     default:
       return ErrorCode.SERVER_ERROR;
   }
 };
 
-export { convertErrorToCode };
+/**
+ * Return error type based on error code
+ */
+ const getErrorType = (error: GraphQLError) => {
+  const { code } = error.extensions ?? {};
+  switch (code as ErrorCode) {
+    case ErrorCode.AUTHENTICATION_ERROR:
+      return NotAuthenticated;
+    case ErrorCode.AUTHORIZATION_ERROR:
+      return NotAuthorized;
+    case ErrorCode.NOT_FOUND_ERROR:
+      return NotFound;
+    case ErrorCode.VALIDATION_ERROR:
+      return ValidationError;
+    case ErrorCode.BAD_USER_INPUT:
+      return UserInputError;
+    case ErrorCode.CONFLICT_ERROR:
+      return ConflictError;
+    case ErrorCode.PAYMENT_ERROR:
+      return PaymentError;
+    case ErrorCode.EXTERNAL_API_ERROR:
+      return ExternalApiError;
+    case ErrorCode.SYSTEM_ERROR:
+      return SystemError;
+
+    default:
+      return Error;
+  }
+};
+
+
+export { convertErrorToCode, getErrorType };
