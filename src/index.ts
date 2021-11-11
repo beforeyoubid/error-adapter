@@ -6,6 +6,8 @@ import {
   PaymentError,
   ValidationError,
   UserInputError,
+  ExternalApiError,
+  SystemError,
   formatError,
 } from './errors';
 import { handleErrorSentryOptions, Sentry, withSentry } from './sentry';
@@ -20,6 +22,8 @@ export {
   PaymentError,
   ValidationError,
   UserInputError,
+  ExternalApiError,
+  SystemError,
   formatError,
   handleErrorSentryOptions,
 };
