@@ -11,6 +11,7 @@ import {
   formatError,
 } from './errors';
 import { handleErrorSentryOptions, Sentry, withSentry } from './sentry';
+import { isSentryLevelError } from './utils';
 
 export {
   Sentry,
@@ -26,4 +27,5 @@ export {
   SystemError,
   formatError,
   handleErrorSentryOptions,
+  isSentryLevelError,
 };
