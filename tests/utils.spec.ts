@@ -9,7 +9,7 @@ import {
   ValidationError,
 } from '../src/errors';
 import { ErrorCode } from '../src/constants';
-import { convertErrorToCode, getErrorType } from '../src/utils';
+import { convertErrorToCode, getErrorType, isSentryLevelError } from '../src/utils';
 import { GraphQLError } from 'graphql';
 
 describe('convertErrorToCode()', () => {
@@ -91,7 +91,7 @@ describe('getErrorType()', () => {
     });
     const type = getErrorType(error);
     const errorOfType = new type('testing this little error');
-    
+
     expect(errorOfType).toBeInstanceOf(NotAuthorized);
   });
   it('Not Found', () => {
@@ -100,7 +100,7 @@ describe('getErrorType()', () => {
     });
     const type = getErrorType(error);
     const errorOfType = new type('testing this little error');
-    
+
     expect(errorOfType).toBeInstanceOf(NotFound);
   });
   it('Validation Error', () => {
@@ -109,7 +109,7 @@ describe('getErrorType()', () => {
     });
     const type = getErrorType(error);
     const errorOfType = new type('testing this little error');
-    
+
     expect(errorOfType).toBeInstanceOf(ValidationError);
   });
   it('Bad User Input', () => {
@@ -118,7 +118,7 @@ describe('getErrorType()', () => {
     });
     const type = getErrorType(error);
     const errorOfType = new type('testing this little error');
-    
+
     expect(errorOfType).toBeInstanceOf(UserInputError);
   });
   it('Conflict Error', () => {
@@ -127,7 +127,7 @@ describe('getErrorType()', () => {
     });
     const type = getErrorType(error);
     const errorOfType = new type('testing this little error');
-    
+
     expect(errorOfType).toBeInstanceOf(ConflictError);
   });
   it('System Error', () => {
@@ -136,7 +136,7 @@ describe('getErrorType()', () => {
     });
     const type = getErrorType(error);
     const errorOfType = new type('testing this little error');
-    
+
     expect(errorOfType).toBeInstanceOf(SystemError);
   });
   it('External API Error', () => {
@@ -145,7 +145,7 @@ describe('getErrorType()', () => {
     });
     const type = getErrorType(error);
     const errorOfType = new type('testing this little error');
-    
+
     expect(errorOfType).toBeInstanceOf(ExternalApiError);
   });
   it('Server Error', () => {
@@ -154,14 +154,36 @@ describe('getErrorType()', () => {
     });
     const type = getErrorType(error);
     const errorOfType = new type('testing this little error');
-    
+
     expect(errorOfType).toBeInstanceOf(Error);
   });
   it('no error defaults to Server Error', () => {
     const error = new GraphQLError('GraphQL Error');
     const type = getErrorType(error);
     const errorOfType = new type('testing this little error');
-    
+
     expect(errorOfType).toBeInstanceOf(Error);
+  });
+});
+
+
+describe('isSentryLevelError()', () => {
+  describe('Sentry level errors', () => {
+    it('regular error i.e. server error', () => {
+      const error = new Error('Critical error to report!!!!!!!!');
+
+      const isSentryLevel = isSentryLevelError(error);
+
+      expect(isSentryLevel).toBeTruthy();
+    });
+  });
+  describe('Non Sentry level errors', () => {
+    it('not authorized', () => {
+      const error = new NotAuthenticated('User not authenticated');
+
+      const isSentryLevel = isSentryLevelError(error);
+
+      expect(isSentryLevel).toBeFalsy();
+    });
   });
 });
