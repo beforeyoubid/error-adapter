@@ -9,7 +9,7 @@ import {
   ExternalApiError,
   SystemError,
 } from './errors';
-import { ErrorCode } from './constants';
+import { ErrorCode, errorTypesForSentry } from './constants';
 import { GraphQLError } from 'graphql';
 
 /**
@@ -72,5 +72,12 @@ const convertErrorToCode = (error: Error): ErrorCode => {
   }
 };
 
+/**
+ * Helper function to determine if an error is a Sentry level error
+ */
+const isSentryLevelError = (error: Error): boolean => {
+  const code = convertErrorToCode(error);
+  return errorTypesForSentry.includes(code);
+}
 
-export { convertErrorToCode, getErrorType };
+export { convertErrorToCode, getErrorType, isSentryLevelError };
