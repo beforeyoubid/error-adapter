@@ -14,7 +14,7 @@ export class ValidationError extends Error {}
 export class ExternalApiError extends Error {}
 export class SystemError extends Error {}
 export { UserInputError };
-export * from './errors-byb-investor-api';
+export * from './activity-log-errors';
 
 /**
  * Used to correctly format GraphQL errors to prepare for sending to Sentry if required
