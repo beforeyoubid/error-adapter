@@ -14,6 +14,7 @@ export class ValidationError extends Error {}
 export class ExternalApiError extends Error {}
 export class SystemError extends Error {}
 export { UserInputError };
+export * from './errors-byb-investor-api';
 
 /**
  * Used to correctly format GraphQL errors to prepare for sending to Sentry if required
@@ -28,7 +29,6 @@ const formatError = (error: GraphQLError): GraphQLFormattedError => {
   if (err instanceof Error && !(err instanceof GraphQLError)) {
     Sentry.captureException(err);
   } else {
-
     const typeOfError = getErrorType(err);
     const er = new typeOfError((err as { message?: string })?.message ?? '');
     const stack: string[] = err.extensions?.exception?.stacktrace ?? [];
