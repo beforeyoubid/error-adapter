@@ -3,7 +3,20 @@ import { UserInputError } from 'apollo-server-core';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import { errorTypesToIncludeDetails } from './constants';
 import { convertErrorToCode, getErrorType } from './utils';
-
+import {
+  ActivityLogError,
+  PermanentActivityLogError,
+  APIFailureActivityLogError,
+  MissingFieldActivityLogError,
+  ExternalAPIAuthenticationFailActivityLogError,
+  MissingExternalResourceActivityLogError,
+  InternalAPIFailureActivityLogError,
+  EmailActivityLogError,
+  SMSActivityLogError,
+  DBActivityLogError,
+  RedisActivityLogError,
+  InvestorOptOutActivityError,
+} from './activity-log-errors';
 /* tslint:disable */
 export class NotAuthorized extends Error {}
 export class NotFound extends Error {}
@@ -13,8 +26,6 @@ export class PaymentError extends Error {}
 export class ValidationError extends Error {}
 export class ExternalApiError extends Error {}
 export class SystemError extends Error {}
-export { UserInputError };
-export * from './activity-log-errors';
 
 /**
  * Used to correctly format GraphQL errors to prepare for sending to Sentry if required
@@ -57,4 +68,19 @@ const formatError = (error: GraphQLError): GraphQLFormattedError => {
   };
 };
 
-export { formatError };
+export {
+  formatError,
+  UserInputError,
+  ActivityLogError,
+  PermanentActivityLogError,
+  APIFailureActivityLogError,
+  MissingFieldActivityLogError,
+  ExternalAPIAuthenticationFailActivityLogError,
+  MissingExternalResourceActivityLogError,
+  InternalAPIFailureActivityLogError,
+  EmailActivityLogError,
+  SMSActivityLogError,
+  DBActivityLogError,
+  RedisActivityLogError,
+  InvestorOptOutActivityError,
+};
