@@ -1,3 +1,4 @@
+import { ErrorCode } from './constants';
 import {
   NotAuthorized,
   NotFound,
@@ -23,7 +24,7 @@ import {
   InvestorOptOutActivityError,
 } from './errors';
 import { handleErrorSentryOptions, Sentry, withSentry } from './sentry';
-import { isSentryLevelError } from './utils';
+import { convertErrorToCode, isSentryLevelError } from './utils';
 
 export {
   Sentry,
@@ -52,4 +53,6 @@ export {
   formatError,
   handleErrorSentryOptions,
   isSentryLevelError,
+  ErrorCode,
+  convertErrorToCode,
 };
