@@ -2,14 +2,15 @@ import serverlessSentry, { WithSentryOptions, Handler } from 'serverless-sentry-
 import { Sentry } from '../node';
 
 const isArgOptions = (arg: WithSentryOptions | Handler<any, any>): arg is WithSentryOptions => typeof arg === 'object';
-const isArgHandler = (arg: WithSentryOptions | Handler<any, any>): arg is Handler<any, any> => typeof arg === 'function';
+const isArgHandler = (arg: WithSentryOptions | Handler<any, any>): arg is Handler<any, any> =>
+  typeof arg === 'function';
 
 /**
  * Wrap the serverless-sentry-lib function call to default to using own Sentry client unless custom options provided
  */
 function withSentry(options: WithSentryOptions, handler: Handler<any, any>): Handler<any, any>;
 function withSentry(handler: Handler<any, any>): Handler<any, any>;
-function withSentry (arg1: WithSentryOptions | Handler<any, any>, arg2?: Handler<any, any>): Handler<any, any> {
+function withSentry(arg1: WithSentryOptions | Handler<any, any>, arg2?: Handler<any, any>): Handler<any, any> {
   if (isArgOptions(arg1) && arg2 !== undefined && isArgHandler(arg2)) {
     // custom options passed in, include in callback
     // this allows the use of serverless-sentry-lib to handle custom options
@@ -21,6 +22,6 @@ function withSentry (arg1: WithSentryOptions | Handler<any, any>, arg2?: Handler
   } else {
     throw TypeError('Invalid args passed to withSentry');
   }
-};
+}
 
 export default withSentry;
