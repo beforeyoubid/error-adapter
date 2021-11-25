@@ -12,8 +12,8 @@ const initialise = (options?: ISentryOptions): void => {
   if (!isSentryInitialised) {
     const { defaultSentryOptions, sendToSentry } = getDefaultSentryParams();
 
-    // replace defaulted options with options passed in if they exist 
-    var sentryOptions = { ...defaultSentryOptions, ...options };
+    // replace defaulted options with options passed in if they exist
+    let sentryOptions = { ...defaultSentryOptions, ...options };
 
     if (sendToSentry) {
       Sentry.init(sentryOptions);
