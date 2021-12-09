@@ -12,9 +12,9 @@
     "lint": "eslint --max-warnings 0 '**/*.{ts,tsx,js,jsx}'",
     "ts": "tsc --noEmit",
     "lint:fix": "eslint --fix --max-warnings 0 '**/*.{ts,tsx,js,jsx}'",
-    "test": "yarn build && jest --config jestconfig.json",
-    "test:coverage": "yarn build && jest --config jestconfig.json --watch --coverage",
-    "test:ci": "yarn build && jest --config jestconfig.json --verbose=false --coverage",
+    "test": "yarn build && yarn jest --config jestconfig.json",
+    "test:coverage": "yarn build && yarn jest --config jestconfig.json --watch --coverage",
+    "test:ci": "yarn build && yarn jest --config jestconfig.json --verbose=false --coverage",
     "test-only": "jest --config jestconfig.json",
     "build": "tsc",
     "build-and-publish": "npm run build && npm publish --access public"
