@@ -28,7 +28,7 @@ const getDefaultSentryParams = (env = process?.env || {}): ISentryParams => {
   const defaultSentryOptions = {
     dsn: SENTRY_DSN,
     environment: SENTRY_ENVIRONMENT,
-    sampleRate: SENTRY_SAMPLE_RATE,
+    sampleRate: Number(SENTRY_SAMPLE_RATE),
     beforeSend: handleBeforeSend,
   };
 
