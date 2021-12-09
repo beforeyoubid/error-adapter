@@ -9,7 +9,8 @@
     "src/**/*"
   ],
   "scripts": {
-    "lint": "eslint --max-warnings 0 '**/*.{ts,tsx,js,jsx}' && tsc --noEmit",
+    "lint": "eslint --max-warnings 0 '**/*.{ts,tsx,js,jsx}'",
+    "ts": "tsc --noEmit",
     "lint:fix": "eslint --fix --max-warnings 0 '**/*.{ts,tsx,js,jsx}'",
     "test": "yarn build && jest --config jestconfig.json",
     "test:coverage": "yarn build && jest --config jestconfig.json --watch --coverage",
@@ -45,6 +46,7 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "jest": "^26.4.0",
+    "jest-junit": "^13.0.0",
     "prettier": "^2.0.5",
     "ts-jest": "^26.2.0",
     "typescript": "^3.9.7"
