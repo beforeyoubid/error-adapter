@@ -13,7 +13,7 @@ const initialise = (options?: NodeOptions): void => {
     const { defaultSentryOptions, sendToSentry } = getDefaultSentryParams();
 
     // replace defaulted options with options passed in if they exist
-    let sentryOptions = { ...defaultSentryOptions, ...options };
+    const sentryOptions = { ...defaultSentryOptions, ...options };
 
     if (sendToSentry) {
       Sentry.init(sentryOptions);
@@ -25,6 +25,8 @@ const initialise = (options?: NodeOptions): void => {
 };
 
 // attach custom initialise function
-const SentryWithInitialise: typeof Sentry & { initialise: typeof initialise } = Object.assign(Sentry, { initialise });
+const SentryWithInitialise: typeof Sentry & { initialise: typeof initialise } = Object.assign({}, Sentry ?? {}, {
+  initialise,
+});
 
 export { SentryWithInitialise as Sentry };
