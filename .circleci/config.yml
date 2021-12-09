@@ -17,7 +17,7 @@ jobs:
       - run: NODE_ENV=development yarn
       - run:
           name: Tests
-          command: yarn test --reporters=jest-junit
+          command: yarn test --reporters=default --reporters=jest-junit
           environment:
             JEST_JUNIT_OUTPUT_DIR: ./reports/jest/
       - store_test_results:
