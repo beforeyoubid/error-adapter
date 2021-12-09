@@ -16,7 +16,7 @@ module.exports = {
     '@typescript-eslint/no-empty-interface': 0,
     '@typescript-eslint/no-var-requires': 0,
     '@typescript-eslint/defined-types-are-used': 0,
-    'prefer-const': 0,
+    'prefer-const': 1,
     '@typescript-eslint/ban-ts-ignore': 'off',
   },
 };
