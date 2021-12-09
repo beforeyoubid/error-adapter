@@ -1,5 +1,5 @@
-let Sentry = require('@sentry/node');
-import { ISentryOptions } from '../../types';
+import Sentry from '@sentry/node';
+import { NodeOptions } from '@sentry/node';
 import { getDefaultSentryParams } from '../utils';
 
 let isSentryInitialised = false;
@@ -8,12 +8,12 @@ let isSentryInitialised = false;
  * Initialise Sentry based on provided options
  * @param options
  */
-const initialise = (options?: ISentryOptions): void => {
+const initialise = (options?: NodeOptions): void => {
   if (!isSentryInitialised) {
     const { defaultSentryOptions, sendToSentry } = getDefaultSentryParams();
 
-    // replace defaulted options with options passed in if they exist 
-    var sentryOptions = { ...defaultSentryOptions, ...options };
+    // replace defaulted options with options passed in if they exist
+    let sentryOptions = { ...defaultSentryOptions, ...options };
 
     if (sendToSentry) {
       Sentry.init(sentryOptions);
@@ -25,6 +25,6 @@ const initialise = (options?: ISentryOptions): void => {
 };
 
 // attach custom initialise function
-Sentry.initialise = initialise;
+const SentryWithInitialise: typeof Sentry & { initialise: typeof initialise } = Object.assign(Sentry, { initialise });
 
-export { Sentry };
+export { SentryWithInitialise as Sentry };
