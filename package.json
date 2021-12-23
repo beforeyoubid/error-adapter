@@ -1,19 +1,19 @@
 {
   "name": "@beforeyoubid/error-adapter",
-  "version": "1.0.27",
+  "version": "1.1.2",
   "description": "A module to standardize error handling across the BYB platform",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist/**/*",
-    "src/**/*"
+    "dist/**/*"
   ],
   "scripts": {
-    "lint": "eslint --max-warnings 0 '**/*.{ts,tsx,js,jsx}' && tsc --noEmit",
+    "lint": "eslint --max-warnings 0 '**/*.{ts,tsx,js,jsx}'",
+    "ts": "tsc --noEmit",
     "lint:fix": "eslint --fix --max-warnings 0 '**/*.{ts,tsx,js,jsx}'",
-    "test": "yarn build && jest --config jestconfig.json",
-    "test:coverage": "yarn build && jest --config jestconfig.json --watch --coverage",
-    "test:ci": "yarn build && jest --config jestconfig.json --verbose=false --coverage",
+    "test": "yarn build && yarn jest --config jestconfig.json",
+    "test:coverage": "yarn build && yarn jest --config jestconfig.json --watch --coverage",
+    "test:ci": "yarn build && yarn jest --config jestconfig.json --verbose=false --coverage",
     "test-only": "jest --config jestconfig.json",
     "build": "tsc",
     "build-and-publish": "npm run build && npm publish --access public"
@@ -31,20 +31,21 @@
   "homepage": "https://github.com/beforeyoubid/error-adapter#readme",
   "dependencies": {
     "@sentry/node": "6.2.2",
-    "apollo-server-core": "^3.4.0",
+    "apollo-server-errors": "^3.3.0",
     "graphql": "^15.3.0",
     "serverless-sentry-lib": "^2.4.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.17",
     "@types/jest": "^26.0.9",
-    "@types/node": "^14.0.27",
+    "@types/node": "^16.11.12",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
     "eslint": "^7.6.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "jest": "^26.4.0",
+    "jest-junit": "^13.0.0",
     "prettier": "^2.0.5",
     "ts-jest": "^26.2.0",
     "typescript": "^3.9.7"
