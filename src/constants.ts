@@ -2,6 +2,7 @@ enum ErrorCode {
   AUTHENTICATION_ERROR = 'authentication_error',
   AUTHORIZATION_ERROR = 'authorization_error',
   NOT_FOUND_ERROR = 'not_found_error',
+  DOWNSTREAM_SERVICE_ERROR = 'DOWNSTREAM_SERVICE_ERROR',
   VALIDATION_ERROR = 'validation_error',
   BAD_USER_INPUT = 'bad_user_input_error',
   CONFLICT_ERROR = 'conflict_error',

@@ -2,6 +2,7 @@ import {
   NotAuthorized,
   NotFound,
   NotAuthenticated,
+  DownstreamServiceError,
   ConflictError,
   PaymentError,
   ValidationError,
@@ -27,7 +28,7 @@ import { GraphQLError } from 'graphql';
 /**
  * Parse the error based on the error constructor
  */
-const convertErrorToCode = (error: Error): ErrorCode => {
+const convertErrorToCode = (error: Error) => {
   const { constructor } = error || {};
   switch (constructor) {
     case NotAuthenticated:
@@ -72,8 +73,11 @@ const convertErrorToCode = (error: Error): ErrorCode => {
       return ErrorCode.REDIS_ACTIVITY_LOG_ERROR;
     case InvestorOptOutActivityError:
       return ErrorCode.INVESTOR_OPT_OUT_ACTIVITY_LOG_ERROR;
+    case DownstreamServiceError:
+      return ErrorCode.DOWNSTREAM_SERVICE_ERROR;
+
     default:
-      return ErrorCode.SERVER_ERROR;
+      return null;
   }
 };
 
@@ -134,7 +138,7 @@ const getErrorType = (error: GraphQLError) => {
  * Helper function to determine if an error is a Sentry level error
  */
 const isSentryLevelError = (error: Error): boolean => {
-  const code = convertErrorToCode(error);
+  const code = convertErrorToCode(error) ?? ErrorCode.SERVER_ERROR;
   return errorTypesForSentry.includes(code);
 };
 
