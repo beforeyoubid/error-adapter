@@ -151,13 +151,13 @@ describe('convertErrorToCode()', () => {
     const error = new Error('testing this little error');
     const code = convertErrorToCode(error);
 
-    expect(code).toStrictEqual(ErrorCode.SERVER_ERROR);
+    expect(code).toStrictEqual(null);
   });
   it('no error defaults to server error', () => {
     const error: any = null;
     const code = convertErrorToCode(error);
 
-    expect(code).toStrictEqual(ErrorCode.SERVER_ERROR);
+    expect(code).toStrictEqual(null);
   });
 });
 
