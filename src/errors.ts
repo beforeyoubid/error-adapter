@@ -1,7 +1,7 @@
 import { Sentry } from './sentry';
 import { UserInputError } from 'apollo-server-errors';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
-import { errorTypesToIncludeDetails } from './constants';
+import { errorTypesToIncludeDetails, ErrorCode } from './constants';
 import { convertErrorToCode, getErrorType } from './utils';
 import {
   ActivityLogError,
@@ -17,9 +17,11 @@ import {
   RedisActivityLogError,
   InvestorOptOutActivityError,
 } from './activity-log-errors';
+
 /* tslint:disable */
 export class NotAuthorized extends Error {}
 export class NotFound extends Error {}
+export class DownstreamServiceError extends Error {}
 export class NotAuthenticated extends Error {}
 export class ConflictError extends Error {}
 export class PaymentError extends Error {}
@@ -28,13 +30,13 @@ export class ExternalApiError extends Error {}
 export class SystemError extends Error {}
 
 /**
- * Used to correctly format GraphQL errors to prepare for sending to Sentry if required
+ * Used to correctly format GraphQL errors to prepare for sending to Sentry
  */
 const formatError = (error: GraphQLError): GraphQLFormattedError => {
   const err: Error | GraphQLError = error.originalError ?? error;
 
   let details;
-  const code = convertErrorToCode(err);
+  const code = convertErrorToCode(err) ?? ErrorCode.SERVER_ERROR;
 
   // Error will be a GraphQL error if formatting error using a GraphQL Federation
   if (err instanceof Error && !(err instanceof GraphQLError)) {
@@ -64,6 +66,7 @@ const formatError = (error: GraphQLError): GraphQLFormattedError => {
       ...error.extensions,
       code,
       details,
+      has_sent_to_sentry: true,
     },
   };
 };
