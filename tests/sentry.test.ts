@@ -1,5 +1,5 @@
 import { GraphQLError } from 'graphql';
-import { handleBeforeSend } from './sentry';
+import { handleBeforeSend } from '../src/sentry';
 
 describe('check for error code and has_sent_to_sentry', () => {
   it('if error has been already sent to sentry and is not the error type for sentry', () => {
