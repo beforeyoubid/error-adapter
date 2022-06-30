@@ -14,7 +14,6 @@ const handleBeforeSend = (_event: any, hint: { originalException: Error | GraphQ
   // default to server error if not found
   if (!code) {
     code = ((error as GraphQLError).extensions?.code as ErrorCode) ?? ErrorCode.SERVER_ERROR;
-    // running in gateway
   }
 
   if (!errorTypesForSentry.includes(code) || (error as GraphQLError).extensions?.has_sent_to_sentry) {
