@@ -18,9 +18,6 @@ import {
   InvestorOptOutActivityError,
 } from './activity-log-errors';
 
-// Initialise the Sentry client
-Sentry.initialise();
-
 /* tslint:disable */
 export class NotAuthorized extends Error {}
 export class NotFound extends Error {}
