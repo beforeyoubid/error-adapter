@@ -147,13 +147,13 @@ describe('convertErrorToCode()', () => {
 
     expect(code).toStrictEqual(ErrorCode.INVESTOR_OPT_OUT_ACTIVITY_LOG_ERROR);
   });
-  it('error defaults to server error', () => {
+  it('error defaults to null', () => {
     const error = new Error('testing this little error');
     const code = convertErrorToCode(error);
 
     expect(code).toStrictEqual(null);
   });
-  it('no error defaults to server error', () => {
+  it('no error defaults to null', () => {
     const error: any = null;
     const code = convertErrorToCode(error);
 
