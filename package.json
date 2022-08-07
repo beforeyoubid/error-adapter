@@ -18,8 +18,9 @@
     "build": "npm run build:types && npm run build:js",
     "build:types": "tsc --emitDeclarationOnly --declaration --project tsconfig.build.json",
     "build:js": "swc src --out-dir dist --extensions \".ts,.tsx\" --source-maps inline --ignore=.spec.js",
-    "build-and-publish": "npm run build && npm publish --access public"
-    
+    "build-and-publish": "npm run build && npm publish --access public",
+    "build-and-publish-dryrun": "npm run build && npm publish --dry-run",
+    "build-and-publish-dryrun-ci": "npm run build && npm publish --registry http://localhost:4873"
   },
   "repository": {
     "type": "git",
