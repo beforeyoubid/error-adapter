@@ -3,3 +3,12 @@ dist
 yarn-error.log
 junit.xml
 .DS_STORE
+coverage
+
+# JUNIT coverage file
+junit.xml
+
+cc-test-reporter
+
+module_test/storage
+module_test/yarn.lock
