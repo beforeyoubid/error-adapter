@@ -7,6 +7,6 @@
     "strict": true /* Enable all strict type-checking options. */,
     "allowSyntheticDefaultImports": true /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */,
   },
-  "include": ["src"],
+  "include": ["src", "Dangerfile", "danger/*", "tests"],
   "exclude": ["node_modules", "**/__tests__/*"]
 }
