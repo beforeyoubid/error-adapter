@@ -4,7 +4,7 @@ import { handleBeforeSend } from './sentry';
 const getEnvs = (env = process?.env || {}) => {
   const {
     SENTRY_DSN = '',
-    SENTRY_ENVIRONMENT = 'n/a',
+    SENTRY_ENVIRONMENT,
     SENTRY_FILTER_LOCAL = 'true',
     SENTRY_SAMPLE_RATE = '1.0',
     DISABLE_SENTRY = 'false',
@@ -27,7 +27,7 @@ const getDefaultSentryParams = (env = process?.env || {}): ISentryParams => {
 
   const defaultSentryOptions = {
     dsn: SENTRY_DSN,
-    environment: SENTRY_ENVIRONMENT,
+    environment: SENTRY_ENVIRONMENT ?? STAGE ?? 'n/a',
     sampleRate: Number(SENTRY_SAMPLE_RATE),
     beforeSend: handleBeforeSend,
   };
