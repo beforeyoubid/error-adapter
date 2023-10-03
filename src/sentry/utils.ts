@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import { ISentryParams } from '../types';
 import { handleBeforeSend } from './sentry';
 
@@ -25,7 +26,7 @@ const getDefaultSentryParams = (env = process?.env || {}): ISentryParams => {
   const { SENTRY_DSN, SENTRY_ENVIRONMENT, SENTRY_FILTER_LOCAL, SENTRY_SAMPLE_RATE, DISABLE_SENTRY, STAGE } =
     getEnvs(env);
 
-  const defaultSentryOptions = {
+  const defaultSentryOptions: Sentry.NodeOptions = {
     dsn: SENTRY_DSN,
     environment: SENTRY_ENVIRONMENT ?? STAGE ?? 'n/a',
     sampleRate: Number(SENTRY_SAMPLE_RATE),
