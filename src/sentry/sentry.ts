@@ -1,12 +1,17 @@
+import { GraphQLError } from 'graphql';
+import * as Sentry from '@sentry/node';
+
 import { convertErrorToCode } from '../utils';
 import { errorTypesForSentry, ErrorCode } from '../constants';
-import { GraphQLError } from 'graphql';
-import { ErrorEvent, EventHint, Event } from '@sentry/types/types/event';
+
+type ErrorEvent = Parameters<NonNullable<Sentry.NodeOptions['beforeSend']>>[0];
+type EventHint = Parameters<NonNullable<Sentry.NodeOptions['beforeSend']>>[1];
+type BeforeSendReturnType = ReturnType<NonNullable<Sentry.NodeOptions['beforeSend']>>;
 
 /**
  * Determine which errors are sent to Sentry based on error type
  */
-const handleBeforeSend = (_event: ErrorEvent, hint: EventHint): Event | null => {
+export const handleBeforeSend = (_event: ErrorEvent, hint: EventHint): BeforeSendReturnType => {
   const { originalException: error } = hint;
 
   let code = convertErrorToCode(error as Error);
@@ -22,5 +27,3 @@ const handleBeforeSend = (_event: ErrorEvent, hint: EventHint): Event | null => 
   }
   return _event;
 };
-
-export { handleBeforeSend };
